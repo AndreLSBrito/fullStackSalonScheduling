@@ -1,21 +1,48 @@
+import { endOfDay, startOfDay } from "date-fns";
 import { prisma } from "../database/prisma";
 import { ICreate } from "../interfaces/SchedulesInterface";
 
 export class SchedulesRepository{
- async create({name, phone, date}:ICreate){
+ async create({name, phone, date, user_id}:ICreate){
     const result = await prisma.schedule.create({
       data: {
         name,
         phone,
-        date
+        date,
+        user_id
       }
     })
     return result
   }
-  async find(date:Date){
+  async find(date:Date, user_id:string){
     const result = await prisma.schedule.findFirst({
-      where:{date}
+      where:{date, user_id}
     })
+    return result
+  }
+  async findAll(date:Date){
+    const result = await prisma.schedule.findMany({
+      where:{
+        date: {
+          gte: startOfDay(date),
+          lt: endOfDay(date)
+        }
+      },
+      orderBy:{
+        date: 'asc'
+      }
+    });
+    return result
+  }
+  async update(id:string, date: Date){
+    const result = await prisma.schedule.update({
+      where:{
+        id,
+      },
+      data:{
+        date,
+      },
+    });
     return result
   }
 }
