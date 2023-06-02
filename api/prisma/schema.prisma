@@ -11,11 +11,12 @@ datasource db {
 }
 
 model Users {
-  id         String @id @default(uuid())
-  email      String @unique
+  id         String     @id @default(uuid())
+  email      String     @unique
   password   String
   name       String
-  avatar_url String @default("")
+  avatar_url String     @default("")
+  schedule   Schedule[]
 }
 
 model Schedule {
@@ -23,4 +24,6 @@ model Schedule {
   name  String
   phone String
   date  DateTime
+  user_id String @default("")
+  users Users    @relation(fields: [user_id], references: [id])
 }
