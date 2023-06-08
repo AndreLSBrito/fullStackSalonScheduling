@@ -8,6 +8,7 @@ import { Button } from '../../components/Button/Index'
 import {Link} from 'react-router-dom'
 import {AiOutlineMail} from 'react-icons/ai'
 import {BsKey} from 'react-icons/bs'
+import { useAuth } from '../../hooks/auth'
 
 interface IFormValues {
   email: string;
@@ -15,6 +16,7 @@ interface IFormValues {
 }
 
 export function Login(){
+  const {signIn } = useAuth()
   const schema = yup.object().shape({
     email: yup
       .string()
@@ -26,10 +28,14 @@ export function Login(){
   const {register, handleSubmit, formState:{errors}} = useForm<IFormValues>({
     resolver: yupResolver(schema)
   })
-  const submit = handleSubmit((data) => {
-    console.log("🚀 ~ file: index.tsx:26 ~ submit ~ data:", data)
- 
-
+  const submit = handleSubmit(async ({email, password}) => {
+    try {
+      await signIn({email, password})
+     
+      
+    } catch (error) {
+      
+    }
   })
   return(
     <div className={style.background}>
